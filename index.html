@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>画像放り込みタイムスケジュールメーカー</title>
+　　<link rel="icon" href="favicon5.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
@@ -58,63 +61,121 @@
     <div class="flex flex-1 overflow-hidden">
         <!-- 左パネル -->
         <aside id="left-panel" class="w-1/4 bg-white shadow-lg transition-all duration-300 ease-in-out z-10 flex flex-col">
-            <div class="p-4 border-b">
+            <div class="p-4 border-b flex justify-between items-center">
                 <h2 id="panel-title" class="text-lg font-bold">設定</h2>
+                <button id="panel-back-btn" class="hidden px-4 py-1 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">戻る</button>
             </div>
             <div class="flex-1 overflow-y-auto sidebar-content p-4">
                 <!-- 設定ビュー -->
                 <div id="settings-view">
-                    <div class="mb-4"><label id="major-tick-label" for="major-tick-select" class="block text-sm font-medium text-gray-700 mb-1">主目盛り</label><select id="major-tick-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="4">4時間</option><option value="2">2時間</option><option value="1" selected>1時間</option><option value="0">なし</option></select></div>
-                    <div class="mb-4"><label id="minor-tick-label" for="minor-tick-select" class="block text-sm font-medium text-gray-700 mb-1">補助目盛り</label><select id="minor-tick-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="30">30分</option><option value="15" selected>15分</option><option value="0">なし</option></select></div>
-                    <div class="mb-4"><label id="time-label-label" for="time-label-select" class="block text-sm font-medium text-gray-700 mb-1">時間表示</label><select id="time-label-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="6">6時間</option><option value="3" selected>3時間</option><option value="2">2時間</option><option value="1">1時間</option><option value="0">なし</option></select></div>
+                    <div class="mb-4"><label id="time-label-label" for="time-label-select" class="block text-sm font-medium text-gray-700 mb-1">時間表示</label><select id="time-label-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="6">6時間</option><option value="4">4時間</option><option value="3" selected>3時間</option><option value="2">2時間</option><option value="1">1時間</option><option value="0">なし</option></select></div>
                     <div class="mb-4"><label id="time-size-label" for="time-label-size" class="block text-sm font-medium text-gray-700 mb-1">時間文字サイズ</label><select id="time-label-size" class="w-full p-2 border border-gray-300 rounded-md"><option value="12">小</option><option value="14">中</option><option value="16">大</option><option value="20" selected>特大</option><option value="24">最大</option></select></div>
+                    <div class="mb-4"><label id="major-tick-label" for="major-tick-select" class="block text-sm font-medium text-gray-700 mb-1">主目盛り</label><select id="major-tick-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="6">6時間</option><option value="4">4時間</option><option value="3">3時間</option><option value="2">2時間</option><option value="1" selected>1時間</option><option value="0">なし</option></select></div>
+                    <div class="mb-4"><label id="minor-tick-label" for="minor-tick-select" class="block text-sm font-medium text-gray-700 mb-1">補助目盛り</label><select id="minor-tick-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="30">30分</option><option value="15" selected>15分</option><option value="0">なし</option></select></div>
                     <div class="space-y-4 pt-4 border-t">
                         <h4 id="bg-image-title" class="font-semibold">背景画像</h4>
                         <div><label id="bg-area-color-label" for="bg-area-color-input" class="block text-sm font-medium text-gray-700 mb-1">背景エリアの色</label><input type="color" id="bg-area-color-input" value="#ffffff" class="mt-1 p-1 h-10 w-full border border-gray-300 rounded-md"></div>
-                        <div id="bg-drag-area" class="drag-area">ここにドラッグ</div>
+                        <div id="bg-drag-area" class="drag-area">ここに背景画像をドロップ</div>
                         <div id="bg-image-controls" class="hidden space-y-4">
                             <div><label id="bg-opacity-label" for="bg-opacity-slider" class="block text-sm font-medium text-gray-700">透過度 (<span id="bg-opacity-value">100</span>%)</label><input type="range" id="bg-opacity-slider" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
                             <div><label id="bg-scale-label" for="bg-scale-slider" class="block text-sm font-medium text-gray-700">拡大・縮小 (<span id="bg-scale-value">100</span>%)</label><input type="range" id="bg-scale-slider" min="10" max="300" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                            <div><label id="bg-x-label" for="bg-x-slider" class="block text-sm font-medium text-gray-700">横位置 (<span id="bg-x-value">0</span>)</label><input type="range" id="bg-x-slider" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                            <div><label id="bg-y-label" for="bg-y-slider" class="block text-sm font-medium text-gray-700">縦位置 (<span id="bg-y-value">0</span>)</label><input type="range" id="bg-y-slider" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                            <button id="delete-bg-image-btn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">画像を削除</button>
+                            <div>
+                                <label id="bg-position-label" class="block text-sm font-medium text-gray-700">位置（横/縦）</label>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs text-gray-500 w-16">横 (<span id="bg-x-value">0</span>)</span>
+                                    <input type="range" id="bg-x-slider" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs text-gray-500 w-16">縦 (<span id="bg-y-value">0</span>)</span>
+                                    <input type="range" id="bg-y-slider" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 pt-4">
+                                <button id="reset-bg-image-btn" class="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">背景画像設定をリセット</button>
+                                <button id="delete-bg-image-btn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">画像を削除</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- ヘルプビュー -->
                 <div id="help-view" class="hidden">
                      <ul id="help-list" class="space-y-3 text-sm list-disc list-inside"></ul>
-                     <button id="help-back-btn" class="mt-6 w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">戻る</button>
                 </div>
                 <!-- 画像出力ビュー -->
                 <div id="export-view" class="hidden space-y-4">
                     <div><label id="export-size-label" for="export-size-select" class="block text-sm font-medium text-gray-700 mb-1">画像サイズ</label><select id="export-size-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="800">800x800</option><option value="1200" selected>1200x1200</option><option value="2000">2000x2000</option></select></div>
                     <div><label id="export-format-label" for="export-format-select" class="block text-sm font-medium text-gray-700 mb-1">画像形式</label><select id="export-format-select" class="w-full p-2 border border-gray-300 rounded-md"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option></select></div>
                     <button id="export-confirm-btn" class="w-full px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">出力実行</button>
-                    <button id="export-back-btn" class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">戻る</button>
                 </div>
                 <!-- 編集ビュー -->
                 <div id="edit-view" class="hidden space-y-4">
-                    <div><label id="edit-color-label" class="block text-sm font-medium text-gray-700">背景色</label><input type="color" id="edit-color" class="mt-1 p-1 h-10 w-full border border-gray-300 rounded-md"></div>
-                    <div><label id="edit-color-opacity-label" for="edit-color-opacity" class="block text-sm font-medium text-gray-700">背景色の透過度 (<span id="color-opacity-value">100</span>%)</label><input type="range" id="edit-color-opacity" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                    <div class="space-y-4 pt-4 border-t">
-                        <h4 id="edit-text-title" class="font-semibold">テキストの編集</h4>
-                        <div><label id="edit-text-content-label" for="edit-text" class="block text-sm font-medium text-gray-700">内容</label><input type="text" id="edit-text" class="mt-1 p-2 w-full border border-gray-300 rounded-md" placeholder="スケジュールを入力..."></div>
-                        <div><label id="edit-text-size-label" for="edit-text-size" class="block text-sm font-medium text-gray-700">サイズ (<span id="text-size-value">20</span>px)</label><input type="range" id="edit-text-size" min="8" max="48" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                        <div><label id="edit-text-x-label" for="edit-text-x" class="block text-sm font-medium text-gray-700">横位置 (<span id="text-x-value">0</span>)</label><input type="range" id="edit-text-x" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                        <div><label id="edit-text-y-label" for="edit-text-y" class="block text-sm font-medium text-gray-700">縦位置 (<span id="text-y-value">0</span>)</label><input type="range" id="edit-text-y" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-1/3">
+                            <label id="edit-color-label" class="block text-sm font-medium text-gray-700 mb-1">背景色</label>
+                            <input type="color" id="edit-color" class="p-1 h-10 w-full border border-gray-300 rounded-md">
+                        </div>
+                        <div class="w-2/3">
+                            <label id="edit-color-opacity-label" for="edit-color-opacity" class="block text-sm font-medium text-gray-700 mb-1">透過度 (<span id="color-opacity-value">100</span>%)</label>
+                            <input type="range" id="edit-color-opacity" min="0" max="100" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
                     </div>
                     <div id="image-edit-section" class="space-y-4 pt-4 border-t">
                         <h4 id="edit-image-title" class="font-semibold">画像の調整</h4>
                         <div><label id="edit-image-scale-label" for="edit-image-scale" class="block text-sm font-medium text-gray-700">拡大・縮小 (<span id="scale-value">100</span>%)</label><input type="range" id="edit-image-scale" min="10" max="500" value="100" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                        <div><label id="edit-image-x-label" for="edit-image-x" class="block text-sm font-medium text-gray-700">横位置 (<span id="x-value">0</span>)</label><input type="range" id="edit-image-x" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
-                        <div><label id="edit-image-y-label" for="edit-image-y" class="block text-sm font-medium text-gray-700">縦位置 (<span id="y-value">0</span>)</label><input type="range" id="edit-image-y" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"></div>
+                        <div>
+                            <label id="image-position-label" class="block text-sm font-medium text-gray-700">位置（横/縦）</label>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-xs text-gray-500 w-16">横 (<span id="x-value">0</span>)</span>
+                                <input type="range" id="edit-image-x" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                             <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-xs text-gray-500 w-16">縦 (<span id="y-value">0</span>)</span>
+                                <input type="range" id="edit-image-y" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
                         <button id="delete-image-btn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">画像を削除</button>
                     </div>
-                     <div class="pt-4 border-t flex space-x-2">
-                        <button id="edit-view-back-btn" class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">戻る</button>
-                        <button id="delete-segment-btn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">このパーツを削除</button>
+                    <div class="space-y-4 pt-4 border-t">
+                        <h4 id="edit-text-title" class="font-semibold">テキストの編集</h4>
+                        <div><label id="edit-text-content-label" for="edit-text" class="block text-sm font-medium text-gray-700">内容</label><input type="text" id="edit-text" class="mt-1 p-2 w-full border border-gray-300 rounded-md" placeholder="説明を入力…"></div>
+                        <div><label id="edit-font-family-label" for="edit-font-family" class="block text-sm font-medium text-gray-700">フォント</label>
+                            <select id="edit-font-family" class="mt-1 w-full p-2 border border-gray-300 rounded-md">
+                                <option value="Noto Sans JP">ゴシック体</option>
+                                <option value="Noto Serif JP">明朝体</option>
+                                <option value="Yuji Syuku">手書き風</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-1/3">
+                                <label id="edit-text-color-label" for="edit-text-color" class="block text-sm font-medium text-gray-700 mb-1">文字色</label>
+                                <input type="color" id="edit-text-color" value="#000000" class="p-1 h-10 w-full border border-gray-300 rounded-md">
+                            </div>
+                            <div class="w-2/3">
+                                <label id="edit-text-size-label" for="edit-text-size" class="block text-sm font-medium text-gray-700">サイズ (<span id="text-size-value">20</span>px)</label>
+                                <input type="range" id="edit-text-size" min="8" max="48" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 pt-2">
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="edit-text-bold" class="rounded"> <span id="text-style-bold-label">太字</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="edit-text-italic" class="rounded"> <span id="text-style-italic-label">斜体</span></label>
+                            <label class="flex items-center space-x-2"><input type="checkbox" id="edit-text-shadow" class="rounded"> <span id="text-style-shadow-label">影</span></label>
+                        </div>
+                        <div>
+                            <label id="text-position-label" class="block text-sm font-medium text-gray-700">位置（横/縦）</label>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-xs text-gray-500 w-16">横 (<span id="text-x-value">0</span>)</span>
+                                <input type="range" id="edit-text-x" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                             <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-xs text-gray-500 w-16">縦 (<span id="text-y-value">0</span>)</span>
+                                <input type="range" id="edit-text-y" min="-100" max="100" value="0" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
                     </div>
+                     <div class="pt-4 border-t flex space-x-2">
+                         <button id="reset-segment-btn" class="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">パーツ設定をリセット</button>
+                         <button id="delete-segment-btn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">このパーツを削除</button>
+                     </div>
                 </div>
             </div>
         </aside>
@@ -151,6 +212,7 @@
             const helpView = document.getElementById('help-view');
             const exportView = document.getElementById('export-view');
             const editView = document.getElementById('edit-view');
+            const panelBackBtn = document.getElementById('panel-back-btn');
             
             const majorTickSelect = document.getElementById('major-tick-select');
             const minorTickSelect = document.getElementById('minor-tick-select');
@@ -164,14 +226,13 @@
             const exportSizeSelect = document.getElementById('export-size-select');
             const exportFormatSelect = document.getElementById('export-format-select');
             const exportConfirmBtn = document.getElementById('export-confirm-btn');
-            const exportBackBtn = document.getElementById('export-back-btn');
-            const helpBackBtn = document.getElementById('help-back-btn');
             
             const editColorInput = document.getElementById('edit-color');
             const editColorOpacity = document.getElementById('edit-color-opacity');
             const colorOpacityValue = document.getElementById('color-opacity-value');
             const editTextInput = document.getElementById('edit-text');
-            const edittextsize = document.getElementById('edit-text-size');
+            const editFontFamilySelect = document.getElementById('edit-font-family');
+            const editTextSize = document.getElementById('edit-text-size');
             const textSizeValue = document.getElementById('text-size-value');
             const editTextX = document.getElementById('edit-text-x');
             const textXValue = document.getElementById('text-x-value');
@@ -179,14 +240,13 @@
             const textYValue = document.getElementById('text-y-value');
             const imageEditSection = document.getElementById('image-edit-section');
             const editImageScale = document.getElementById('edit-image-scale');
-            const editImageX = document.getElementById('edit-image-x');
-            const editImageY = document.getElementById('edit-image-y');
             const scaleValue = document.getElementById('scale-value');
+            const editImageX = document.getElementById('edit-image-x');
             const xValue = document.getElementById('x-value');
+            const editImageY = document.getElementById('edit-image-y');
             const yValue = document.getElementById('y-value');
             const deleteImageBtn = document.getElementById('delete-image-btn');
             const deleteSegmentBtn = document.getElementById('delete-segment-btn');
-            const editViewBackBtn = document.getElementById('edit-view-back-btn');
             
             const bgDragArea = document.getElementById('bg-drag-area');
             const bgImageControls = document.getElementById('bg-image-controls');
@@ -201,9 +261,17 @@
             const deleteBgImageBtn = document.getElementById('delete-bg-image-btn');
             const bgAreaColorInput = document.getElementById('bg-area-color-input');
 
+            const resetBgImageBtn = document.getElementById('reset-bg-image-btn');
+            const resetSegmentBtn = document.getElementById('reset-segment-btn');
+
+            const editTextColor = document.getElementById('edit-text-color');
+            const editTextBold = document.getElementById('edit-text-bold');
+            const editTextItalic = document.getElementById('edit-text-italic');
+            const editTextShadow = document.getElementById('edit-text-shadow');
+
             // --- 状態管理 ---
             let settings = { language: 'ja', majorTicks: 1, minorTicks: 15, timeLabels: 3, timeLabelSize: 20, bgAreaColor: '#ffffff' };
-            let segments = [{ id: Date.now(), start: 0, end: 24, color: '#ffffff', colorOpacity: 1, image: null, text: '', textSize: 20, textOffsetX: 0, textOffsetY: 0 }];
+            let segments = [{ id: Date.now(), start: 0, end: 24, color: '#ffffff', colorOpacity: 1, image: null, text: '', fontFamily: 'Noto Sans JP', textSize: 20, textColor: '#000000', isBold: false, isItalic: false, hasShadow: false, textOffsetX: 0, textOffsetY: 0 }];
             let backgroundImage = null;
             let currentView = 'settings';
             
@@ -268,25 +336,32 @@
                 
                 document.getElementById('modal-cancel').addEventListener('click', () => modalContainer.style.display = 'none');
                 exportConfirmBtn.addEventListener('click', handleExport);
-                exportBackBtn.addEventListener('click', () => switchView('settings'));
-                helpBackBtn.addEventListener('click', () => switchView('settings'));
+                
+                panelBackBtn.addEventListener('click', () => {
+                    if (currentView === 'edit') {
+                        currentlyEditingSegment = null;
+                    }
+                    switchView('settings');
+                });
                 
                 editColorInput.addEventListener('input', (e) => { updateSegmentProperty('color', e.target.value); saveState(); });
                 editColorOpacity.addEventListener('input', (e) => { updateSegmentProperty('colorOpacity', parseFloat(e.target.value) / 100); colorOpacityValue.textContent = e.target.value; saveState(); });
                 editTextInput.addEventListener('input', (e) => { updateSegmentProperty('text', e.target.value); saveState(); });
-                edittextsize.addEventListener('input', (e) => { updateSegmentProperty('textSize', parseInt(e.target.value, 10)); textSizeValue.textContent = e.target.value; saveState(); });
+                editFontFamilySelect.addEventListener('change', (e) => { updateSegmentProperty('fontFamily', e.target.value); saveState(); });
+                editTextSize.addEventListener('input', (e) => { updateSegmentProperty('textSize', parseInt(e.target.value, 10)); textSizeValue.textContent = e.target.value; saveState(); });
                 editTextX.addEventListener('input', (e) => { updateSegmentProperty('textOffsetX', parseFloat(e.target.value) / 100); textXValue.textContent = e.target.value; saveState(); });
                 editTextY.addEventListener('input', (e) => { updateSegmentProperty('textOffsetY', parseFloat(e.target.value) / 100); textYValue.textContent = e.target.value; saveState(); });
                 
+                editTextColor.addEventListener('input', (e) => { updateSegmentProperty('textColor', e.target.value); saveState(); });
+                editTextBold.addEventListener('change', (e) => { updateSegmentProperty('isBold', e.target.checked); saveState(); });
+                editTextItalic.addEventListener('change', (e) => { updateSegmentProperty('isItalic', e.target.checked); saveState(); });
+                editTextShadow.addEventListener('change', (e) => { updateSegmentProperty('hasShadow', e.target.checked); saveState(); });
+
                 editImageScale.addEventListener('input', (e) => { updateImageProperty('userScale', parseFloat(e.target.value) / 100); scaleValue.textContent = e.target.value; saveState(); });
                 editImageX.addEventListener('input', (e) => { updateImageProperty('offsetX', parseFloat(e.target.value) / 100); xValue.textContent = e.target.value; saveState(); });
                 editImageY.addEventListener('input', (e) => { updateImageProperty('offsetY', parseFloat(e.target.value) / 100); yValue.textContent = e.target.value; saveState(); });
                 deleteImageBtn.addEventListener('click', deleteImage);
                 deleteSegmentBtn.addEventListener('click', deleteSegment);
-                editViewBackBtn.addEventListener('click', () => {
-                    currentlyEditingSegment = null;
-                    switchView('settings');
-                });
 
                 // Background Image Listeners
                 bgAreaColorInput.addEventListener('input', (e) => { settings.bgAreaColor = e.target.value; bgDragArea.style.backgroundColor = e.target.value; saveSettings(); saveState(); draw(); });
@@ -299,11 +374,60 @@
                 bgYSlider.addEventListener('input', (e) => { if(backgroundImage) { backgroundImage.y = parseFloat(e.target.value) / 100; bgYValue.textContent = e.target.value; saveState(); draw(); } });
                 deleteBgImageBtn.addEventListener('click', () => { showConfirmationModal(translations[settings.language].confirmBgImageDeleteTitle, translations[settings.language].confirmBgImageDeleteMessage, () => { backgroundImage = null; bgImageControls.classList.add('hidden'); saveState(); draw(); }); });
 
-                // Undo Listener
+                resetBgImageBtn.addEventListener('click', () => {
+                    if (backgroundImage) {
+                        backgroundImage.opacity = 1;
+                        backgroundImage.scale = 1;
+                        backgroundImage.x = 0;
+                        backgroundImage.y = 0;
+                        
+                        bgOpacitySlider.value = 100;
+                        bgOpacityValue.textContent = 100;
+                        bgScaleSlider.value = 100;
+                        bgScaleValue.textContent = 100;
+                        bgXSlider.value = 0;
+                        bgXValue.textContent = 0;
+                        bgYSlider.value = 0;
+                        bgYValue.textContent = 0;
+
+                        saveState();
+                        draw();
+                    }
+                });
+
+                resetSegmentBtn.addEventListener('click', () => {
+                    if (currentlyEditingSegment) {
+                        currentlyEditingSegment.color = '#ffffff';
+                        currentlyEditingSegment.colorOpacity = 1;
+                        currentlyEditingSegment.text = '';
+                        currentlyEditingSegment.fontFamily = 'Noto Sans JP';
+                        currentlyEditingSegment.textSize = 20;
+                        currentlyEditingSegment.textColor = '#000000';
+                        currentlyEditingSegment.isBold = false;
+                        currentlyEditingSegment.isItalic = false;
+                        currentlyEditingSegment.hasShadow = false;
+                        currentlyEditingSegment.textOffsetX = 0;
+                        currentlyEditingSegment.textOffsetY = 0;
+
+                        if (currentlyEditingSegment.image) {
+                            currentlyEditingSegment.image.userScale = 1.0;
+                            currentlyEditingSegment.image.offsetX = 0;
+                            currentlyEditingSegment.image.offsetY = 0;
+                        }
+                        populateEditView(currentlyEditingSegment);
+                        saveState();
+                        draw();
+                    }
+                });
+
                 document.addEventListener('keydown', (e) => {
                     if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
                         e.preventDefault();
                         handleUndo();
+                    }
+                    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
+                        e.preventDefault();
+                        handleRedo();
                     }
                 });
             }
@@ -312,6 +436,7 @@
             function draw(targetCtx = ctx, size = {width: canvas.width, height: canvas.height}, format = 'image/png') {
                 const localCenter = { x: size.width / 2, y: size.height / 2 };
                 const localRadius = size.width / 2 * 0.8;
+                const exportScale = localRadius / radius;
                 
                 targetCtx.clearRect(0, 0, size.width, size.height);
                 drawBackground(targetCtx, size, format, localCenter, localRadius);
@@ -326,12 +451,12 @@
                 if (backgroundImage && backgroundImage.data) {
                     drawBackgroundImage(targetCtx, size);
                 }
-                drawSegments(targetCtx, localCenter, localRadius);
+                drawSegments(targetCtx, localCenter, localRadius, exportScale);
                 targetCtx.restore();
 
-                drawTicks(targetCtx, localCenter, localRadius);
-                drawSegmentOutlines(targetCtx, localCenter, localRadius);
-                drawOuterCircle(targetCtx, localCenter, localRadius);
+                drawTicks(targetCtx, localCenter, localRadius, exportScale);
+                drawSegmentOutlines(targetCtx, localCenter, localRadius, exportScale);
+                drawOuterCircle(targetCtx, localCenter, localRadius, exportScale);
                 if (targetCtx === ctx) {
                     drawHoveredTick(targetCtx, localCenter, localRadius);
                 }
@@ -365,37 +490,55 @@
                 targetCtx.restore();
             }
 
-            function drawSegments(targetCtx, localCenter, localRadius) {
+            function drawSegments(targetCtx, localCenter, localRadius, exportScale = 1) {
+                // 1. Draw all colored backgrounds first
                 segments.forEach(seg => {
                     const startAngle = timeToAngle(seg.start);
                     const endAngle = timeToAngle(seg.end);
                     
+                    targetCtx.save();
                     targetCtx.beginPath();
                     targetCtx.moveTo(localCenter.x, localCenter.y);
                     targetCtx.arc(localCenter.x, localCenter.y, localRadius, startAngle, endAngle);
                     targetCtx.closePath();
-                    
-                    targetCtx.save();
                     targetCtx.fillStyle = hexToRgba(seg.color || '#ffffff', seg.colorOpacity || 1);
                     targetCtx.fill();
                     targetCtx.restore();
+                });
 
+                // 2. Draw all images, clipped to their respective segments
+                segments.forEach(seg => {
                     if (seg.image && seg.image.data) {
+                        const startAngle = timeToAngle(seg.start);
+                        const endAngle = timeToAngle(seg.end);
+
                         targetCtx.save();
+                        
+                        targetCtx.beginPath();
+                        targetCtx.moveTo(localCenter.x, localCenter.y);
+                        targetCtx.arc(localCenter.x, localCenter.y, localRadius, startAngle, endAngle);
+                        targetCtx.closePath();
                         targetCtx.clip();
-                        drawImageInSegment(targetCtx, seg, localCenter, localRadius);
+
+                        drawImageInSegment(targetCtx, seg, localCenter, localRadius, exportScale);
+                        
                         targetCtx.restore();
                     }
-                    
-                    if (seg.text) drawTextInSegment(targetCtx, seg, localCenter, localRadius);
+                });
+
+                // 3. Draw all texts
+                segments.forEach(seg => {
+                    if (seg.text) {
+                        drawTextInSegment(targetCtx, seg, localCenter, localRadius);
+                    }
                 });
             }
             
-            function drawSegmentOutlines(targetCtx, localCenter, localRadius) {
-                 segments.forEach(seg => drawSegmentLine(targetCtx, timeToAngle(seg.start), localCenter, localRadius));
+            function drawSegmentOutlines(targetCtx, localCenter, localRadius, exportScale = 1) {
+                 segments.forEach(seg => drawSegmentLine(targetCtx, timeToAngle(seg.start), localCenter, localRadius, exportScale));
             }
 
-            function drawImageInSegment(targetCtx, seg, localCenter, localRadius) {
+            function drawImageInSegment(targetCtx, seg, localCenter, localRadius, exportScale = 1) {
                 if (!seg.image || !(seg.image.data instanceof HTMLImageElement)) {
                     return;
                 }
@@ -411,14 +554,20 @@
                 if (endAngle < startAngle) { endAngle += 2 * Math.PI; }
                 const midAngle = (startAngle + endAngle) / 2;
 
-                const drawWidth = img.width * scale;
-                const drawHeight = img.height * scale;
-                const imgCenterX = localCenter.x + (localRadius * 0.6) * Math.cos(midAngle) + (localRadius * offsetX);
-                const imgCenterY = localCenter.y + (localRadius * 0.6) * Math.sin(midAngle) + (localRadius * offsetY);
+                const drawWidth = img.width * scale * exportScale;
+                const drawHeight = img.height * scale * exportScale;
+
+                const basePositionRadius = localRadius * 0.6;
+                const basePosX = localCenter.x + basePositionRadius * Math.cos(midAngle);
+                const basePosY = localCenter.y + basePositionRadius * Math.sin(midAngle);
                 
+                const offsetScale = localRadius * 0.5;
+                const imgCenterX = basePosX + (offsetScale * offsetX);
+                const imgCenterY = basePosY + (offsetScale * offsetY);
+
                 targetCtx.save();
                 targetCtx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                targetCtx.shadowBlur = 15;
+                targetCtx.shadowBlur = 15 * exportScale;
                 targetCtx.drawImage(img, imgCenterX - drawWidth / 2, imgCenterY - drawHeight / 2, drawWidth, drawHeight);
                 targetCtx.restore();
             }
@@ -436,11 +585,24 @@
 
                 targetCtx.textAlign = 'center';
                 targetCtx.textBaseline = 'middle';
-                targetCtx.fillStyle = '#000';
+                targetCtx.fillStyle = seg.textColor || '#000000';
                 
+                if (seg.hasShadow) {
+                    targetCtx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    targetCtx.shadowBlur = 5;
+                    targetCtx.shadowOffsetX = 2;
+                    targetCtx.shadowOffsetY = 2;
+                }
+
                 const baseFontSize = seg.textSize || 16;
-                const exportScale = localRadius / (canvas.width / 2 * 0.8);
-                targetCtx.font = `${baseFontSize * exportScale}px 'Noto Sans JP'`;
+                const fontFamily = seg.fontFamily || 'Noto Sans JP';
+                const exportScale = localRadius / radius;
+                
+                let fontStyle = '';
+                if (seg.isItalic) fontStyle += 'italic ';
+                if (seg.isBold) fontStyle += 'bold ';
+
+                targetCtx.font = `${fontStyle}${baseFontSize * exportScale}px '${fontFamily}'`;
 
                 let midAngle = (startAngle + endAngle) / 2;
                 if (endAngle < startAngle) { midAngle = (startAngle + endAngle + 2 * Math.PI) / 2; }
@@ -449,35 +611,39 @@
                 const textOffsetY = seg.textOffsetY || 0;
 
                 const baseTextRadius = localRadius * 0.6;
-                const x = localCenter.x + baseTextRadius * Math.cos(midAngle) + (localRadius * textOffsetX);
-                const y = localCenter.y + baseTextRadius * Math.sin(midAngle) + (localRadius * textOffsetY);
+                const basePosX = localCenter.x + baseTextRadius * Math.cos(midAngle);
+                const basePosY = localCenter.y + baseTextRadius * Math.sin(midAngle);
+                
+                const offsetScale = localRadius * 0.5;
+                const x = basePosX + (offsetScale * textOffsetX);
+                const y = basePosY + (offsetScale * textOffsetY);
 
                 targetCtx.fillText(seg.text, x, y);
                 targetCtx.restore();
             }
             
-            function drawSegmentLine(targetCtx, angle, localCenter, localRadius) {
+            function drawSegmentLine(targetCtx, angle, localCenter, localRadius, exportScale = 1) {
                 targetCtx.save();
                 targetCtx.beginPath();
                 targetCtx.moveTo(localCenter.x, localCenter.y);
                 targetCtx.lineTo(localCenter.x + localRadius * Math.cos(angle), localCenter.y + localRadius * Math.sin(angle));
                 targetCtx.strokeStyle = '#333';
-                targetCtx.lineWidth = 2;
+                targetCtx.lineWidth = 2 * exportScale;
                 targetCtx.stroke();
                 targetCtx.restore();
             }
 
-            function drawTicks(targetCtx, localCenter, localRadius) {
+            function drawTicks(targetCtx, localCenter, localRadius, exportScale = 1) {
                 targetCtx.save();
 
                 if (settings.minorTicks > 0) {
-                    targetCtx.setLineDash([2, 5]);
+                    targetCtx.setLineDash([2 * exportScale, 5 * exportScale]);
                     const minorInterval = settings.minorTicks / 60;
-                    for (let i = 0; i < 24; i += minorInterval) drawTick(targetCtx, i, localCenter, localRadius, 1, '#ccc');
+                    for (let i = 0; i < 24; i += minorInterval) drawTick(targetCtx, i, localCenter, localRadius, 1 * exportScale, '#ccc');
                 }
                 if (settings.majorTicks > 0) {
                     targetCtx.setLineDash([]); //実線
-                    for (let i = 0; i < 24; i += settings.majorTicks) drawTick(targetCtx, i, localCenter, localRadius, 1.5, '#aaa');
+                    for (let i = 0; i < 24; i += settings.majorTicks) drawTick(targetCtx, i, localCenter, localRadius, 1.5 * exportScale, '#aaa');
                 }
                 
                 targetCtx.restore();
@@ -494,7 +660,7 @@
             function drawTimeLabels(targetCtx, localCenter, localRadius) {
                 if (settings.timeLabels <= 0) return;
                 targetCtx.save();
-                const exportScale = localRadius / (canvas.width / 2 * 0.8);
+                const exportScale = localRadius / radius;
                 targetCtx.font = `${settings.timeLabelSize * exportScale}px Arial`;
                 targetCtx.fillStyle = '#333'; targetCtx.textAlign = 'center'; targetCtx.textBaseline = 'middle';
                 const labelRadius = localRadius * 1.15;
@@ -506,13 +672,13 @@
                 targetCtx.restore();
             }
             
-            function drawOuterCircle(targetCtx, localCenter, localRadius) {
+            function drawOuterCircle(targetCtx, localCenter, localRadius, exportScale = 1) {
                 if (settings.timeLabels > 0) return;
                 targetCtx.save();
                 targetCtx.beginPath();
                 targetCtx.arc(localCenter.x, localCenter.y, localRadius, 0, 2 * Math.PI);
                 targetCtx.strokeStyle = '#aaa';
-                targetCtx.lineWidth = 1;
+                targetCtx.lineWidth = 1 * exportScale;
                 targetCtx.stroke();
                 targetCtx.restore();
             }
@@ -630,6 +796,7 @@
 
                             const newImage = { 
                                 data: img, 
+                                dataURL: event.target.result,
                                 initialScale: initialScale,
                                 userScale: 1.0,
                                 offsetX: 0, 
@@ -667,6 +834,13 @@
                 helpView.classList.add('hidden');
                 editView.classList.add('hidden');
                 exportView.classList.add('hidden');
+
+                if (viewName === 'settings') {
+                    panelBackBtn.classList.add('hidden');
+                } else {
+                    panelBackBtn.classList.remove('hidden');
+                }
+
                 updateUIText(settings.language, viewName);
             }
             
@@ -675,21 +849,27 @@
                 editColorOpacity.value = (segment.colorOpacity || 1) * 100;
                 colorOpacityValue.textContent = editColorOpacity.value;
                 editTextInput.value = segment.text || '';
-                edittextsize.value = segment.textSize || 16;
+                editFontFamilySelect.value = segment.fontFamily || 'Noto Sans JP';
+                editTextSize.value = segment.textSize || 16;
                 textSizeValue.textContent = segment.textSize || 16;
                 editTextX.value = (segment.textOffsetX || 0) * 100;
                 textXValue.textContent = Math.round(editTextX.value);
                 editTextY.value = (segment.textOffsetY || 0) * 100;
                 textYValue.textContent = Math.round(editTextY.value);
 
+                editTextColor.value = segment.textColor || '#000000';
+                editTextBold.checked = segment.isBold || false;
+                editTextItalic.checked = segment.isItalic || false;
+                editTextShadow.checked = segment.hasShadow || false;
+
                 if (segment.image) {
                     imageEditSection.style.display = 'block';
                     const userScalePercent = (segment.image.userScale || 1) * 100;
                     editImageScale.value = userScalePercent;
-                    editImageX.value = (segment.image.offsetX || 0) * 100;
-                    editImageY.value = (segment.image.offsetY || 0) * 100;
                     scaleValue.textContent = Math.round(userScalePercent);
+                    editImageX.value = (segment.image.offsetX || 0) * 100;
                     xValue.textContent = Math.round(editImageX.value);
+                    editImageY.value = (segment.image.offsetY || 0) * 100;
                     yValue.textContent = Math.round(editImageY.value);
                 } else {
                     imageEditSection.style.display = 'none';
@@ -737,6 +917,7 @@
                     img.onload = () => {
                         backgroundImage = {
                             data: img,
+                            dataURL: event.target.result,
                             opacity: 1,
                             scale: 1,
                             x: 0,
@@ -762,7 +943,7 @@
                     start: time,
                     end: originalSegment.end,
                     color: '#ffffff', colorOpacity: 1, image: null, text: '',
-                    textSize: 16, textOffsetX: 0, textOffsetY: 0
+                    fontFamily: 'Noto Sans JP', textSize: 16, textColor: '#000000', isBold: false, isItalic: false, hasShadow: false, textOffsetX: 0, textOffsetY: 0
                 };
                 originalSegment.end = time;
                 segments.splice(targetIndex + 1, 0, newSegment);
@@ -864,28 +1045,20 @@
             }
             
             // --- 保存・呼び出し・出力 ---
-            function imageToDataURL(img) {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.naturalWidth;
-                canvas.height = img.naturalHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-                return canvas.toDataURL('image/png');
-            }
-
             function handleSave() {
                 const segmentsForSave = segments.map(seg => {
                     const newSeg = {...seg};
-                    if (newSeg.image && newSeg.image.data instanceof HTMLImageElement) {
-                        newSeg.image.data = imageToDataURL(newSeg.image.data);
+                    if (newSeg.image) {
+                        newSeg.image = {...newSeg.image, data: null}; // HTMLImageElementは保存しない
                     }
                     return newSeg;
                 });
+                 const bgImageForSave = backgroundImage ? {...backgroundImage, data: null} : null;
 
                 const dataToSave = {
                     settings: settings,
                     segments: segmentsForSave,
-                    backgroundImage: backgroundImage && backgroundImage.data ? { ...backgroundImage, data: imageToDataURL(backgroundImage.data) } : null
+                    backgroundImage: bgImageForSave
                 };
 
                 const jsonString = JSON.stringify(dataToSave, null, 2);
@@ -927,8 +1100,8 @@
                         timeLabelSelect.value = settings.timeLabels;
                         timeLabelSizeSelect.value = settings.timeLabelSize;
 
-                        if (loadedData.backgroundImage && loadedData.backgroundImage.data) {
-                            const img = await dataURLToImage(loadedData.backgroundImage.data);
+                        if (loadedData.backgroundImage && loadedData.backgroundImage.dataURL) {
+                            const img = await dataURLToImage(loadedData.backgroundImage.dataURL);
                             backgroundImage = { ...loadedData.backgroundImage, data: img };
                             bgImageControls.classList.remove('hidden');
                         } else {
@@ -937,9 +1110,9 @@
                         }
 
                         const newSegments = await Promise.all(loadedData.segments.map(async (seg) => {
-                            if (seg.image && seg.image.data && typeof seg.image.data === 'string') {
+                            if (seg.image && seg.image.dataURL) {
                                 try {
-                                    const img = await dataURLToImage(seg.image.data);
+                                    const img = await dataURLToImage(seg.image.dataURL);
                                     return { ...seg, image: { ...seg.image, data: img } };
                                 } catch (error) {
                                     console.error("Failed to load an image from data URL:", error);
@@ -993,7 +1166,6 @@
                 const saved = localStorage.getItem('scheduleMakerSettings');
                 if (saved) {
                     const loadedSettings = JSON.parse(saved);
-                    delete loadedSettings.showTimeSuffix;
                     settings = { ...settings, ...loadedSettings };
                     
                     majorTickSelect.value = settings.majorTicks;
@@ -1006,11 +1178,22 @@
             // --- Undo/Redo ---
             function saveState() {
                 historyStack = historyStack.slice(0, historyIndex + 1);
+
+                const segmentsForHistory = segments.map(seg => {
+                    const newSeg = {...seg};
+                    if (newSeg.image) {
+                        newSeg.image = {...newSeg.image, data: null};
+                    }
+                    return newSeg;
+                });
+                const bgImageForHistory = backgroundImage ? {...backgroundImage, data: null} : null;
+
                 const state = {
-                    segments: JSON.parse(JSON.stringify(segments)),
-                    backgroundImage: JSON.parse(JSON.stringify(backgroundImage)),
+                    segments: segmentsForHistory,
+                    backgroundImage: bgImageForHistory,
                     settings: JSON.parse(JSON.stringify(settings))
                 };
+                
                 historyStack.push(state);
                 historyIndex = historyStack.length - 1;
             }
@@ -1018,21 +1201,39 @@
             async function restoreState(state) {
                 settings = JSON.parse(JSON.stringify(state.settings));
                 
-                if (state.backgroundImage && state.backgroundImage.data) {
-                    const img = await dataURLToImage(state.backgroundImage.data);
-                    backgroundImage = { ...state.backgroundImage, data: img };
+                if (state.backgroundImage && state.backgroundImage.dataURL) {
+                    try {
+                        const img = await dataURLToImage(state.backgroundImage.dataURL);
+                        backgroundImage = { ...state.backgroundImage, data: img };
+                        bgImageControls.classList.remove('hidden');
+                    } catch {
+                        backgroundImage = null;
+                        bgImageControls.classList.add('hidden');
+                    }
                 } else {
                     backgroundImage = null;
+                    bgImageControls.classList.add('hidden');
                 }
 
                 const newSegments = await Promise.all(state.segments.map(async (seg) => {
-                    if (seg.image && seg.image.data && typeof seg.image.data === 'string') {
-                        const img = await dataURLToImage(seg.image.data);
-                        return { ...seg, image: { ...seg.image, data: img } };
+                    if (seg.image && seg.image.dataURL) {
+                        try {
+                            const img = await dataURLToImage(seg.image.dataURL);
+                            return { ...seg, image: { ...seg.image, data: img } };
+                        } catch (error) {
+                             console.error("Failed to restore image from history:", error);
+                             return { ...seg, image: null };
+                        }
                     }
                     return seg;
                 }));
                 segments = newSegments;
+
+                majorTickSelect.value = settings.majorTicks;
+                minorTickSelect.value = settings.minorTicks;
+                timeLabelSelect.value = settings.timeLabels;
+                timeLabelSizeSelect.value = settings.timeLabelSize;
+                bgAreaColorInput.value = settings.bgAreaColor;
 
                 updateUIText(settings.language, currentView);
                 draw();
@@ -1044,6 +1245,13 @@
                     restoreState(historyStack[historyIndex]);
                 }
             }
+            
+            function handleRedo() {
+                if (historyIndex < historyStack.length - 1) {
+                    historyIndex++;
+                    restoreState(historyStack[historyIndex]);
+                }
+            }
 
             // --- 多言語対応 ---
             const translations = {
@@ -1051,12 +1259,13 @@
                     appTitle: "画像放り込みタイムスケジュールメーカー",
                     settings: "設定", save: "保存", load: "呼び出し", export: "画像出力", help: "操作方法", langToggle: "English",
                     panelTitleSettings: "設定", panelTitleHelp: "操作方法", panelTitleEdit: "パーツの編集", panelTitleExport: "画像出力",
-                    helpList: `<li><strong>区切り線の追加:</strong> 円グラフの外周(点線部分)をクリックします。</li><li><strong>区切り線の移動:</strong> 区切り線をドラッグ＆ドロップで移動できます。</li><li><strong>画像の挿入:</strong> パソコンから画像を目的のエリアにドラッグ＆ドロップします。</li><li><strong>編集:</strong> エリアをダブルクリックすると編集パネルが表示されます。</li><li class="ml-4"><strong>テキスト:</strong> 文字の入力、サイズ、位置を調整できます。</li>`,
+                    helpList: `<li><strong>区切り線の追加:</strong> 円グラフの外周(点線部分)をクリックします。</li><li><strong>区切り線の移動:</strong> 区切り線をドラッグ＆ドロップで移動できます。</li><li><strong>画像の挿入:</strong> パソコンから画像を目的のエリアにドラッグ＆ドロップします。再度画像をドラッグ＆ドロップすると画像を変更できます。</li><li><strong>編集:</strong> エリアをダブルクリックすると編集パネルが表示されます。</li><li class="ml-4"><strong>テキスト:</strong> 文字の入力、サイズ、位置を調整できます。</li>`,
                     majorTickLabel: "主目盛り", minorTickLabel: "補助目盛り", timeLabelLabel: "時間表示", timeSizeLabel: "時間文字サイズ",
-                    bgImageTitle: "背景画像", bgDragArea: "ここにドラッグ", bgOpacityLabel: "透過度", bgScaleLabel: "拡大・縮小", bgXLabel: "横位置", bgYLabel: "縦位置", deleteBgImageBtn: "画像を削除",
-                    editColorLabel: "背景色", editColorOpacityLabel: "背景色の透過度", editTextTitle: "テキストの編集", editTextContentLabel: "内容", editTextSizeLabel: "サイズ", editTextXLabel: "横位置", editTextYLabel: "縦位置",
-                    editImageTitle: "画像の調整", editImageScaleLabel: "拡大・縮小", editImageXLabel: "横位置", editImageYLabel: "縦位置", deleteImageBtn: "画像を削除",
-                    backBtn: "戻る", deleteSegmentBtn: "このパーツを削除",
+                    bgImageTitle: "背景画像", bgAreaColorLabel: "背景エリアの色", bgDragArea: "ここに背景画像をドロップ", bgOpacityLabel: "透過度", bgScaleLabel: "拡大・縮小", bgPositionLabel: "位置（横/縦）", deleteBgImageBtn: "画像を削除",
+                    editColorLabel: "背景色", editColorOpacityLabel: "透過度", editTextTitle: "テキストの編集", editTextContentLabel: "内容", editFontFamilyLabel: "フォント", editTextSizeLabel: "サイズ", textPositionLabel: "位置（横/縦）",
+                    editTextColorLabel: "文字色", textStyleBoldLabel: "太字", textStyleItalicLabel: "斜体", textStyleShadowLabel: "影",
+                    editImageTitle: "画像の調整", editImageScaleLabel: "拡大・縮小", imagePositionLabel: "位置（横/縦）", deleteImageBtn: "画像を削除",
+                    backBtn: "戻る", resetBgBtn: "背景画像設定をリセット", resetSegmentBtn: "パーツ設定をリセット", deleteSegmentBtn: "このパーツを削除",
                     exportSizeLabel: "画像サイズ", exportFormatLabel: "画像形式", exportConfirm: "出力実行",
                     confirmYes: "はい", confirmNo: "いいえ",
                     confirmImageReplaceTitle: "画像の入れ替え", confirmImageReplaceMessage: "すでにある画像を入れ替えますか？",
@@ -1064,9 +1273,9 @@
                     confirmSegmentDeleteTitle: "パーツの削除", confirmSegmentDeleteMessage: "このパーツを削除しますか？",
                     confirmBgImageDeleteTitle: "背景画像の削除", confirmBgImageDeleteMessage: "背景画像を削除しますか？",
                     selectOptions: {
-                        major: ["4時間", "2時間", "1時間", "なし"],
+                        major: ["6時間", "4時間", "3時間", "2時間", "1時間", "なし"],
                         minor: ["30分", "15分", "なし"],
-                        time: ["6時間", "3時間", "2時間", "1時間", "なし"],
+                        time: ["6時間", "4時間", "3時間", "2時間", "1時間", "なし"],
                         size: ["小", "中", "大", "特大", "最大"]
                     }
                 },
@@ -1074,12 +1283,13 @@
                     appTitle: "Image Drop Schedule Maker",
                     settings: "Settings", save: "Save", load: "Load", export: "Export Image", help: "Help", langToggle: "日本語",
                     panelTitleSettings: "Settings", panelTitleHelp: "How to Use", panelTitleEdit: "Edit Segment", panelTitleExport: "Export Image",
-                    helpList: `<li><strong>Add Divider:</strong> Click on the outer edge (dotted line) of the pie chart.</li><li><strong>Move Divider:</strong> Drag and drop a divider to move it.</li><li><strong>Insert Image:</strong> Drag and drop an image from your computer into a segment.</li><li><strong>Edit:</strong> Double-click a segment to open the edit panel.</li><li class="ml-4"><strong>Text:</strong> Adjust content, size, and position of the text.</li>`,
+                    helpList: `<li><strong>Add Divider:</strong> Click on the outer edge (dotted line) of the pie chart.</li><li><strong>Move Divider:</strong> Drag and drop a divider to move it.</li><li><strong>Insert Image:</strong> Drag and drop an image from your computer into a segment. You can change the image by dragging and dropping another one.</li><li><strong>Edit:</strong> Double-click a segment to open the edit panel.</li><li class="ml-4"><strong>Text:</strong> Adjust content, size, and position of the text.</li>`,
                     majorTickLabel: "Major Ticks", minorTickLabel: "Minor Ticks", timeLabelLabel: "Time Labels", timeSizeLabel: "Time Label Size",
-                    bgImageTitle: "Background Image", bgDragArea: "Drag here", bgOpacityLabel: "Opacity", bgScaleLabel: "Scale", bgXLabel: "Horizontal Position", bgYLabel: "Vertical Position", deleteBgImageBtn: "Delete Image",
-                    editColorLabel: "Background Color", editColorOpacityLabel: "Background Opacity", editTextTitle: "Edit Text", editTextContentLabel: "Content", editTextSizeLabel: "Size", editTextXLabel: "Horizontal Position", editTextYLabel: "Vertical Position",
-                    editImageTitle: "Adjust Image", editImageScaleLabel: "Scale", editImageXLabel: "Horizontal Position", editImageYLabel: "Vertical Position", deleteImageBtn: "Delete Image",
-                    backBtn: "Back", deleteSegmentBtn: "Delete this Segment",
+                    bgImageTitle: "Background Image", bgAreaColorLabel: "Background Area Color", bgDragArea: "Drop background image here", bgOpacityLabel: "Opacity", bgScaleLabel: "Scale", bgPositionLabel: "Position (X/Y)", deleteBgImageBtn: "Delete Image",
+                    editColorLabel: "BG Color", editColorOpacityLabel: "Opacity", editTextTitle: "Edit Text", editTextContentLabel: "Content", editFontFamilyLabel: "Font", editTextSizeLabel: "Size", textPositionLabel: "Position (X/Y)",
+                    editTextColorLabel: "Text Color", textStyleBoldLabel: "Bold", textStyleItalicLabel: "Italic", textStyleShadowLabel: "Shadow",
+                    editImageTitle: "Adjust Image", editImageScaleLabel: "Scale", imagePositionLabel: "Position (X/Y)", deleteImageBtn: "Delete Image",
+                    backBtn: "Back", resetBgBtn: "Reset Background Settings", resetSegmentBtn: "Reset Part Settings", deleteSegmentBtn: "Delete this Segment",
                     exportSizeLabel: "Image Size", exportFormatLabel: "Image Format", exportConfirm: "Export",
                     confirmYes: "Yes", confirmNo: "No",
                     confirmImageReplaceTitle: "Replace Image", confirmImageReplaceMessage: "Do you want to replace the existing image?",
@@ -1087,9 +1297,9 @@
                     confirmSegmentDeleteTitle: "Delete Segment", confirmSegmentDeleteMessage: "Do you want to delete this segment?",
                     confirmBgImageDeleteTitle: "Delete Background Image", confirmBgImageDeleteMessage: "Do you want to delete the background image?",
                     selectOptions: {
-                        major: ["4 hours", "2 hours", "1 hour", "None"],
+                        major: ["6 hours", "4 hours", "3 hours", "2 hours", "1 hour", "None"],
                         minor: ["30 min", "15 min", "None"],
-                        time: ["6 hours", "3 hours", "2 hours", "1 hour", "None"],
+                        time: ["6 hours", "4 hours", "3 hours", "2 hours", "1 hour", "None"],
                         size: ["Small", "Medium", "Large", "X-Large", "Max"]
                     }
                 }
@@ -1103,6 +1313,7 @@
                 exportBtn.textContent = t.export;
                 helpBtn.textContent = t.help;
                 langToggleBtn.textContent = t.langToggle;
+                panelBackBtn.textContent = t.backBtn;
                 
                 const activeClasses = { help: 'bg-green-500', export: 'bg-purple-500' };
                 const inactiveClass = 'bg-gray-500';
@@ -1144,35 +1355,39 @@
                 updateOptions('time-label-size', t.selectOptions.size);
                 
                 document.getElementById('bg-image-title').textContent = t.bgImageTitle;
+                document.getElementById('bg-area-color-label').textContent = t.bgAreaColorLabel;
                 bgDragArea.textContent = t.bgDragArea;
                 document.getElementById('bg-opacity-label').childNodes[0].nodeValue = t.bgOpacityLabel + " (";
                 document.getElementById('bg-scale-label').childNodes[0].nodeValue = t.bgScaleLabel + " (";
-                document.getElementById('bg-x-label').childNodes[0].nodeValue = t.bgXLabel + " (";
-                document.getElementById('bg-y-label').childNodes[0].nodeValue = t.bgYLabel + " (";
+                document.getElementById('bg-position-label').textContent = t.bgPositionLabel;
+                resetBgImageBtn.textContent = t.resetBgBtn;
                 deleteBgImageBtn.textContent = t.deleteBgImageBtn;
 
                 document.getElementById('edit-color-label').textContent = t.editColorLabel;
                 document.getElementById('edit-color-opacity-label').childNodes[0].nodeValue = t.editColorOpacityLabel + " (";
                 document.getElementById('edit-text-title').textContent = t.editTextTitle;
                 document.getElementById('edit-text-content-label').textContent = t.editTextContentLabel;
+                document.getElementById('edit-font-family-label').textContent = t.editFontFamilyLabel;
                 document.getElementById('edit-text-size-label').childNodes[0].nodeValue = t.editTextSizeLabel + " (";
-                document.getElementById('edit-text-x-label').childNodes[0].nodeValue = t.editTextXLabel + " (";
-                document.getElementById('edit-text-y-label').childNodes[0].nodeValue = t.editTextYLabel + " (";
+                document.getElementById('text-position-label').textContent = t.textPositionLabel;
                 
+                document.getElementById('edit-text-color-label').textContent = t.editTextColorLabel;
+                document.getElementById('text-style-bold-label').textContent = t.textStyleBoldLabel;
+                document.getElementById('text-style-italic-label').textContent = t.textStyleItalicLabel;
+                document.getElementById('text-style-shadow-label').textContent = t.textStyleShadowLabel;
+
                 document.getElementById('edit-image-title').textContent = t.editImageTitle;
                 document.getElementById('edit-image-scale-label').childNodes[0].nodeValue = t.editImageScaleLabel + " (";
-                document.getElementById('edit-image-x-label').childNodes[0].nodeValue = t.editImageXLabel + " (";
-                document.getElementById('edit-image-y-label').childNodes[0].nodeValue = t.editImageYLabel + " (";
+                document.getElementById('image-position-label').textContent = t.imagePositionLabel;
                 deleteImageBtn.textContent = t.deleteImageBtn;
-                editViewBackBtn.textContent = t.backBtn;
+                resetSegmentBtn.textContent = t.resetSegmentBtn;
                 deleteSegmentBtn.textContent = t.deleteSegmentBtn;
 
                 document.getElementById('export-size-label').textContent = t.exportSizeLabel;
                 document.getElementById('export-format-label').textContent = t.exportFormatLabel;
                 exportConfirmBtn.textContent = t.exportConfirm;
-                exportBackBtn.textContent = t.backBtn;
-                helpBackBtn.textContent = t.backBtn;
-                document.getElementById('modal-cancel').textContent = t.cancel;
+                document.getElementById('modal-cancel').textContent = t.confirmNo;
+                document.getElementById('modal-confirm').textContent = t.confirmYes;
             }
 
             init();
