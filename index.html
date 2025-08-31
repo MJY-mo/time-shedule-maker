@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+    <!-- Font Awesomeの読み込み -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
@@ -42,6 +44,7 @@
         <h1 id="app-title" class="text-xl font-bold text-gray-700">画像放り込みタイムスケジュールメーカー</h1>
         <div id="top-menu" class="flex items-center space-x-4">
             <div class="flex items-center space-x-2">
+                <button id="fullscreen-btn" title="全画面表示" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"><i class="fas fa-expand"></i></button>
                 <button id="export-btn" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-purple-600 transition">画像出力</button>
                 <button id="help-btn" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-green-600 transition">操作方法</button>
             </div>
@@ -213,6 +216,7 @@
             const exportView = document.getElementById('export-view');
             const editView = document.getElementById('edit-view');
             const panelBackBtn = document.getElementById('panel-back-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn'); // ★追加
             
             const majorTickSelect = document.getElementById('major-tick-select');
             const minorTickSelect = document.getElementById('minor-tick-select');
@@ -289,6 +293,7 @@
                 loadSettings();
                 addEventListeners();
                 updateUIText(settings.language, 'settings');
+                updateFullscreenButton(); // ★追加
                 saveState();
                 draw();
             }
@@ -318,6 +323,9 @@
                 loadBtn.addEventListener('click', () => loadInput.click());
                 loadInput.addEventListener('change', handleLoad);
                 exportBtn.addEventListener('click', () => switchView('export'));
+                
+                fullscreenBtn.addEventListener('click', toggleFullscreen); // ★追加
+                document.addEventListener('fullscreenchange', updateFullscreenButton); // ★追加
                 
                 majorTickSelect.addEventListener('change', (e) => { settings.majorTicks = parseFloat(e.target.value); saveState(); draw(); saveSettings(); });
                 minorTickSelect.addEventListener('change', (e) => { settings.minorTicks = parseFloat(e.target.value); saveState(); draw(); saveSettings(); });
@@ -1247,11 +1255,39 @@
             }
             
             function handleRedo() {
-                if (historyIndex < historyStack.length - 1) {
+                if (historyIndex < history.length - 1) {
                     historyIndex++;
-                    restoreState(historyStack[historyIndex]);
+                    restoreState(history[historyIndex]);
                 }
             }
+            
+            // --- Fullscreen Functions --- // ★追加
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.error(`全画面モードへの切り替えに失敗しました: ${err.message} (${err.name})`);
+                    });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            }
+
+            function updateFullscreenButton() {
+                const icon = fullscreenBtn.querySelector('i');
+                const t = translations[settings.language];
+                if (document.fullscreenElement) {
+                    icon.classList.remove('fa-expand');
+                    icon.classList.add('fa-compress');
+                    fullscreenBtn.title = t.fullscreenExit || "Exit Fullscreen";
+                } else {
+                    icon.classList.remove('fa-compress');
+                    icon.classList.add('fa-expand');
+                    fullscreenBtn.title = t.fullscreenEnter || "Fullscreen";
+                }
+            }
+
 
             // --- 多言語対応 ---
             const translations = {
@@ -1272,6 +1308,7 @@
                     confirmImageDeleteTitle: "画像の削除", confirmImageDeleteMessage: "このパーツから画像を削除しますか？",
                     confirmSegmentDeleteTitle: "パーツの削除", confirmSegmentDeleteMessage: "このパーツを削除しますか？",
                     confirmBgImageDeleteTitle: "背景画像の削除", confirmBgImageDeleteMessage: "背景画像を削除しますか？",
+                    fullscreenEnter: "全画面表示", fullscreenExit: "全画面解除", // ★追加
                     selectOptions: {
                         major: ["6時間", "4時間", "3時間", "2時間", "1時間", "なし"],
                         minor: ["30分", "15分", "なし"],
@@ -1296,6 +1333,7 @@
                     confirmImageDeleteTitle: "Delete Image", confirmImageDeleteMessage: "Do you want to delete the image from this segment?",
                     confirmSegmentDeleteTitle: "Delete Segment", confirmSegmentDeleteMessage: "Do you want to delete this segment?",
                     confirmBgImageDeleteTitle: "Delete Background Image", confirmBgImageDeleteMessage: "Do you want to delete the background image?",
+                    fullscreenEnter: "Fullscreen", fullscreenExit: "Exit Fullscreen", // ★追加
                     selectOptions: {
                         major: ["6 hours", "4 hours", "3 hours", "2 hours", "1 hour", "None"],
                         minor: ["30 min", "15 min", "None"],
@@ -1395,3 +1433,5 @@
     </script>
 </body>
 </html>
+
+
